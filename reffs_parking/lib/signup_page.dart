@@ -1,11 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:reffs_parking/login_page.dart';
+import 'api/api_service.dart';
 
 class SignupPage extends StatelessWidget {
   const SignupPage({Key? key});
 
   @override
   Widget build(BuildContext context) {
+    final ApiService apiService = ApiService(baseUrl: 'https://parkingsystem-hjcb.onrender.com'); // Crea una instancia de ApiService
+    String email = '';
+    String password = '';
+    String nombre = '';
+    String telefono = '';
+
+    void _register() async {
+      // Llama a la función de registro del ApiService
+      await apiService.register(email, password, nombre, telefono);
+      // Después del registro, puedes navegar a la página de inicio de sesión
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
+    }
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -38,20 +55,7 @@ class SignupPage extends StatelessWidget {
               Column(
                 children: <Widget>[
                   TextField(
-                    decoration: InputDecoration(
-                      hintText: "Username",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(18),
-                        borderSide: BorderSide.none,
-                      ),
-                      fillColor: const Color.fromARGB(255, 176, 39, 39)
-                          .withOpacity(0.1),
-                      filled: true,
-                      prefixIcon: const Icon(Icons.person),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
+                    onChanged: (value) => email = value,
                     decoration: InputDecoration(
                       hintText: "Email",
                       border: OutlineInputBorder(
@@ -66,6 +70,7 @@ class SignupPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   TextField(
+                    onChanged: (value) => password = value,
                     decoration: InputDecoration(
                       hintText: "Password",
                       border: OutlineInputBorder(
@@ -81,8 +86,9 @@ class SignupPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   TextField(
+                    onChanged: (value) => nombre = value,
                     decoration: InputDecoration(
-                      hintText: "Confirm Password",
+                      hintText: "Nombre",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(18),
                         borderSide: BorderSide.none,
@@ -90,19 +96,33 @@ class SignupPage extends StatelessWidget {
                       fillColor: const Color.fromARGB(255, 176, 39, 39)
                           .withOpacity(0.1),
                       filled: true,
-                      prefixIcon: const Icon(Icons.password),
+                      prefixIcon: const Icon(Icons.person),
                     ),
-                    obscureText: true,
+                  ),
+                  const SizedBox(height: 20),
+                  TextField(
+                    onChanged: (value) => telefono = value,
+                    decoration: InputDecoration(
+                      hintText: "Teléfono",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(18),
+                        borderSide: BorderSide.none,
+                      ),
+                      fillColor: const Color.fromARGB(255, 176, 39, 39)
+                          .withOpacity(0.1),
+                      filled: true,
+                      prefixIcon: const Icon(Icons.phone),
+                    ),
                   ),
                 ],
               ),
               Container(
                 padding: const EdgeInsets.only(top: 3, left: 3),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: _register,
                   child: const Text(
                     "Sign up",
-                    style: TextStyle(fontSize: 20,color:Colors.white),
+                    style: TextStyle(fontSize: 20, color: Colors.white),
                   ),
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),
@@ -167,12 +187,12 @@ class SignupPage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => const LoginPage()),
-                      ); // Acción cuando se presiona el botón de inicio de sesión
+                      );
                     },
                     child: const Text(
                       "Login",
-                      style: TextStyle(color: Color.fromARGB(255, 176, 39, 39)),
-                    ),
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 176, 39, 39))),
                   )
                 ],
               )

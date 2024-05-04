@@ -1,11 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:reffs_parking/signup_page.dart';
+import 'api/api_service.dart';
+import 'car_register_page.dart'; // Importa la página CarRegisterPage
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key? key});
 
   @override
   Widget build(BuildContext context) {
+    final ApiService apiService =
+        ApiService(baseUrl: 'https://parkingsystem-hjcb.onrender.com'); // Crea una instancia de ApiService
+    String email = '';
+    String password = '';
+
+    void _login() async {
+      // Llama a la función de inicio de sesión del ApiService
+      int statusCode = await apiService.login(email, password);
+      if (statusCode == 200) {
+        // Si el inicio de sesión es exitoso, redirige a la página CarRegisterPage
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => RegisterCarPage()),
+        );
+      } else {
+        // Maneja los casos de error de inicio de sesión según sea necesario
+        print('Error en el inicio de sesión');
+      }
+    }
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -14,10 +36,28 @@ class LoginPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _header(context),
-              _inputField(context),
-              _forgotPassword(context),
+              _header(),
+              _inputField((value) =>
+                  email = value), // Actualiza el valor del correo electrónico
+              _inputField((value) => password = value,
+                  isPassword: true), // Actualiza el valor de la contraseña
+              _forgotPassword(),
               _signup(context),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _login,
+                  style: ElevatedButton.styleFrom(
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    backgroundColor: const Color.fromARGB(255, 176, 39, 39),
+                  ),
+                  child: const Text(
+                    "Login",
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                ),
+              )
             ],
           ),
         ),
@@ -25,7 +65,7 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  _header(context) {
+  Widget _header() {
     return const Column(
       children: [
         Text(
@@ -37,78 +77,55 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  _inputField(context) {
+  Widget _inputField(Function(String) onChanged, {bool isPassword = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         TextField(
+          onChanged: onChanged,
           decoration: InputDecoration(
-              hintText: "Username",
+              hintText: isPassword ? "Password" : "Username",
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(18),
-                  borderSide: BorderSide.none
-              ),
-              fillColor: const Color.fromARGB(255, 176, 39, 39).withOpacity(0.1),
+                  borderSide: BorderSide.none),
+              fillColor:
+                  const Color.fromARGB(255, 176, 39, 39).withOpacity(0.1),
               filled: true,
-              prefixIcon: const Icon(Icons.person)),
+              prefixIcon: Icon(isPassword ? Icons.password : Icons.person)),
+          obscureText: isPassword,
         ),
         const SizedBox(height: 10),
-        TextField(
-          decoration: InputDecoration(
-            hintText: "Password",
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(18),
-                borderSide: BorderSide.none),
-            fillColor: const Color.fromARGB(255, 176, 39, 39).withOpacity(0.1),
-            filled: true,
-            prefixIcon: const Icon(Icons.password),
-          ),
-          obscureText: true,
-        ),
-        const SizedBox(height: 10),
-        ElevatedButton(
-          onPressed: () {
-          },
-          style: ElevatedButton.styleFrom(
-            shape: const StadiumBorder(),
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            backgroundColor: const Color.fromARGB(255, 176, 39, 39),
-          ),
-          child: const Text(
-            "Login",
-            style: TextStyle(fontSize: 20,color: Colors.white),
-          ),
-        )
       ],
     );
   }
 
-  _forgotPassword(context) {
+  Widget _forgotPassword() {
     return TextButton(
       onPressed: () {},
-      child: const Text("Forgot password?",
+      child: const Text(
+        "Forgot password?",
         style: TextStyle(color: Color.fromARGB(255, 176, 39, 39)),
       ),
     );
   }
 
-_signup(BuildContext context) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      const Text("Don't have an account? "),
-      TextButton(
-        onPressed: () {
-          // Navegar a la página de registro cuando se presiona el botón
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const SignupPage()),
-          );
-        },
-        child: const Text("Sign Up", style: TextStyle(color: Color.fromARGB(255, 176, 39, 39))),
-      )
-    ],
-  );
-}
-
+  Widget _signup(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text("Don't have an account? "),
+        TextButton(
+          onPressed: () {
+            // Navegar a la página de registro cuando se presiona el botón
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SignupPage()),
+            );
+          },
+          child: const Text("Sign Up",
+              style: TextStyle(color: Color.fromARGB(255, 176, 39, 39))),
+        )
+      ],
+    );
+  }
 }
