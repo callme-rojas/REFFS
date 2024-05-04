@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reffs_parking/maps_screen.dart';
-import 'package:reffs_parking/park_register_page.dart';
 import 'package:reffs_parking/signup_page.dart';
 import 'api/api_service.dart';
-import 'car_register_page.dart'; // Importa la página CarRegisterPage
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key});
