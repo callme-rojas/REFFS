@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:reffs_parking/maps_screen.dart';
+import 'package:reffs_parking/park_register_page.dart';
 import 'package:reffs_parking/signup_page.dart';
 import 'api/api_service.dart';
 import 'car_register_page.dart'; // Importa la página CarRegisterPage
@@ -20,7 +22,7 @@ class LoginPage extends StatelessWidget {
         // Si el inicio de sesión es exitoso, redirige a la página CarRegisterPage
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => RegisterCarPage()),
+          MaterialPageRoute(builder: (context) => MapsScreen()),
         );
       } else {
         // Maneja los casos de error de inicio de sesión según sea necesario
@@ -119,7 +121,7 @@ class LoginPage extends StatelessWidget {
             // Navegar a la página de registro cuando se presiona el botón
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const SignupPage()),
+              MaterialPageRoute(builder: (context) =>  SignupPage()),
             );
           },
           child: const Text("Sign Up",

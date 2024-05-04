@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:reffs_parking/car.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-
+import 'package:reffs_parking/api/api_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterCarPage extends StatefulWidget {
   @override
@@ -10,349 +8,103 @@ class RegisterCarPage extends StatefulWidget {
 }
 
 class _RegisterCarPageState extends State<RegisterCarPage> {
-  List<Car> cars = [];
-  final List<XFile> _imageFiles = []; 
-
+  final TextEditingController placaController = TextEditingController();
   final TextEditingController modeloController = TextEditingController();
-  final TextEditingController colorController = TextEditingController();
-  final TextEditingController nroplacaController = TextEditingController();
-  final TextEditingController heightController = TextEditingController();
-  final TextEditingController widthController = TextEditingController();
-  final TextEditingController lengthController = TextEditingController();
+  final TextEditingController dimensionesController = TextEditingController();
 
-  int selectedYear = DateTime.now().year;
+  final ApiService _apiService = ApiService(baseUrl: 'https://parkingsystem-hjcb.onrender.com');
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('AÑADIR AUTO'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextFormField(
-                style: const TextStyle(
-                    color: Colors.black), 
-                decoration: InputDecoration(
-                  labelText: 'Color',
-                  labelStyle: const TextStyle(
-                      color: Color.fromARGB(255, 176, 39,39)), 
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
-                        color: Color.fromARGB(255, 176, 39, 39)),
-                  ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromARGB(255, 176, 39, 39)),
-                  ),
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Este campo es obligatorio';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              TextFormField(
-                style: const TextStyle(
-                    color: Colors.black), // Aplicar color al texto
-                decoration: InputDecoration(
-                  labelText: 'Modelo',
-                  labelStyle: const TextStyle(
-                      color: Color.fromARGB(255, 176, 39,39)), 
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
-                        color: Color.fromARGB(255, 176, 39, 39)),
-                  ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromARGB(255, 176, 39, 39)),
-                  ),
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Este campo es obligatorio';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Row(
-                children: [
-                  const Text('Año:'),
-                  const SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      _selectYear(context);
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                        const Color.fromARGB(255, 176, 39, 39),
-                      ),
-                    ),
-                    child: Text(
-                      selectedYear.toString(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              TextFormField(
-                style: const TextStyle(
-                    color: Colors.black), 
-                decoration: InputDecoration(
-                  labelText: 'Numero de Placa',
-                  labelStyle: const TextStyle(
-                      color: Color.fromARGB(255, 176, 39,39)), 
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
-                        color: Color.fromARGB(255, 176, 39, 39)),
-                  ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromARGB(255, 176, 39, 39)),
-                  ),
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Este campo es obligatorio';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              TextFormField(
-                style: const TextStyle(
-                    color: Colors.black), // Aplicar color al texto
-                decoration: InputDecoration(
-                  labelText: 'Altura (cm)',
-                  labelStyle: const TextStyle(
-                      color: Color.fromARGB(255, 176, 39, 39)),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
-                        color: Color.fromARGB(255, 176, 39, 39)),
-                  ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromARGB(255, 176, 39, 39)),
-                  ),
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Este campo es obligatorio';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              TextFormField(
-                style: const TextStyle(
-                    color: Colors.black), 
-                decoration: const InputDecoration(
-                  labelText: 'Ancho (cm)',
-                  labelStyle: TextStyle(
-                      color: Color.fromARGB(255, 176, 39,39)), 
-                  enabledBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromARGB(255, 176, 39, 39)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromARGB(255, 176, 39, 39)),
-                  ),
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Este campo es obligatorio';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              TextFormField(
-                style: const TextStyle(
-                    color: Colors.black), // Aplicar color al texto
-                decoration: InputDecoration(
-                  labelText: 'Largo (cm)',
-                  labelStyle: const TextStyle(
-                      color: Color.fromARGB(255, 176, 39,39)), // Aplicar color al texto del label
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
-                        color: Color.fromARGB(255, 176, 39, 39)),
-                  ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromARGB(255, 176, 39, 39)),
-                  ),
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Este campo es obligatorio';
-                  }
-                  return null;
-                },
-              ),
+Future<void> _registerCar() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final usuarioId = prefs.getInt('userId') ?? 0; // Obtener usuarioId de SharedPreferences, si no está disponible, asignar 0
 
-              const SizedBox(height:16),
-              ElevatedButton(
-                onPressed: _getImages,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(
-                      255, 176, 39, 39), // Color de fondo del botón
-                  minimumSize: const Size(
-                      100, 50), // Tamaño mínimo del botón (ancho x alto)
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 8), // Espaciado interno
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                ),
-                child: const Text(
-                  'Añadir Fotos',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white, // Color del texto
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              _buildImagePreview(),   // Mostrar las imágenes seleccionadas         
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    cars.add(
-                      Car(
-                        color: colorController.text,
-                        modelo: modeloController.text,
-                        anio: selectedYear,
-                        nroplaca: nroplacaController.text,
-                        dimensions: Dimensions(
-                          altura: double.parse(heightController.text),
-                          ancho: double.parse(widthController.text),
-                          largo: double.parse(lengthController.text),
-                        ),
-                      ),
-                    );
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(
-                      255, 176, 39, 39), // Color de fondo del botón
-                  minimumSize: const Size(
-                      100, 50), // Tamaño mínimo del botón (ancho x alto)
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 8), // Espaciado interno
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                ),
-                child: const Text(
-                  'Registrar Auto',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white, // Color del texto
-                  ),
-                ),
-              ),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: cars.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    title: Text('Car ${index + 1}'),
-                    subtitle: Text(
-                        'Color: ${cars[index].color}, Modelo: ${cars[index].modelo}, Anio: ${cars[index].anio}, Nro Placa: ${cars[index].nroplaca}, Dimensions: ${cars[index].dimensions.toString()}'),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  if (usuarioId == 0) {
+    // Manejar el caso donde usuarioId no está disponible
+    print('Error: UsuarioId no encontrado en SharedPreferences.');
+    return;
   }
 
-  Future<void> _getImages() async {
-    final picker = ImagePicker();
-    final List<XFile> pickedFiles = await picker.pickMultiImage();
-    setState(() {
-      _imageFiles.clear();
-      _imageFiles.addAll(pickedFiles);
-    });
-    }
+  final placa = placaController.text;
+  final modelo = modeloController.text;
+  final dimensiones = dimensionesController.text;
 
+  final response = await _apiService.addAuto(usuarioId, placa, modelo, dimensiones);
 
-
-  Widget _buildImagePreview() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        for (final imageFile in _imageFiles)
-          Image.file(
-            imageFile as File,
-            height: 100,
-            fit: BoxFit.cover,
-          ),
-      ],
-    );
+  if (response.statusCode == 201) {
+    // Registro exitoso, puedes manejar la respuesta aquí
+    print('Auto registrado exitosamente.');
+  } else {
+    // Manejo de errores si es necesario
+    print('Error al registrar el auto. Código de estado: ${response.statusCode}');
+    print('Mensaje: ${response.body}');
   }
+}
 
-  Future<void> _selectYear(BuildContext context) async {
-    // ignore: unused_local_variable
-    final DateTime? picked = await showDialog<DateTime>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text("Select Year"),
-          content: SizedBox(
-            width: 300,
-            height: 300,
-            child: Theme(
-              data: ThemeData(
-                colorScheme: const ColorScheme.light(
-                  primary: Color.fromARGB(255, 176, 39, 39),
-                ),
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text('Añadir Auto'),
+      backgroundColor: const Color.fromARGB(255, 176, 39, 39), // Color principal
+    ),
+    body: SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextFormField(
+            controller: placaController,
+            decoration: InputDecoration(
+              labelText: 'Placa',
+              labelStyle: TextStyle(color: const Color.fromARGB(255, 176, 39, 39)), // Color principal para el texto del label
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: const Color.fromARGB(255, 176, 39, 39)), // Color principal para el borde enfocado
               ),
-              child: YearPicker(
-                selectedDate: DateTime(selectedYear),
-                onChanged: (DateTime dateTime) {
-                  setState(() {
-                    selectedYear = dateTime.year;
-                  });
-                  Navigator.pop(context);
-                },
-                firstDate: DateTime(1900),
-                lastDate: DateTime.now(),
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: const Color.fromARGB(255, 176, 39, 39)), // Color principal para el borde habilitado
               ),
             ),
           ),
-        );
-      },
-    );
-  }
+          const SizedBox(height: 16),
+          TextFormField(
+            controller: modeloController,
+            decoration: InputDecoration(
+              labelText: 'Modelo',
+              labelStyle: TextStyle(color: const Color.fromARGB(255, 176, 39, 39)), // Color principal para el texto del label
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: const Color.fromARGB(255, 176, 39, 39)), // Color principal para el borde enfocado
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: const Color.fromARGB(255, 176, 39, 39)), // Color principal para el borde habilitado
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextFormField(
+            controller: dimensionesController,
+            decoration: InputDecoration(
+              labelText: 'Dimensiones',
+              labelStyle: TextStyle(color: const Color.fromARGB(255, 176, 39, 39)), // Color principal para el texto del label
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: const Color.fromARGB(255, 176, 39, 39)), // Color principal para el borde enfocado
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: const Color.fromARGB(255, 176, 39, 39)), // Color principal para el borde habilitado
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: _registerCar,
+            child: const Text('Registrar Auto',style: TextStyle(fontSize: 14,color: Colors.white),),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 176, 39, 39), // Color principal para el fondo del botón
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
+}
+

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:reffs_parking/car_register_page.dart';
 import 'package:reffs_parking/login_page.dart';
+import 'package:reffs_parking/park_register_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +18,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const LoginPage(), // Cambiado de MyHomePage a LoginPage
+      home: LoginPage(), // Cambiado de MyHomePage a LoginPage
       debugShowCheckedModeBanner: false, 
     );
   }

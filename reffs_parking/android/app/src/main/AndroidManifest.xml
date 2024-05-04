@@ -3,6 +3,11 @@
         android:label="reffs_parking"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <meta-data
+                android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyA2Qu981XT7unRjMZmA88OqwyMKQlGJsA8"/>
+                
         <activity
             android:name=".MainActivity"
             android:exported="true"

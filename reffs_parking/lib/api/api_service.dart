@@ -76,7 +76,8 @@ class ApiService {
         'email': email,
         'password': password,
         'nombre': username,
-        'telefono': telefono, // Incluir el campo telefono en el cuerpo de la solicitud
+        'telefono':
+            telefono, // Incluir el campo telefono en el cuerpo de la solicitud
       });
 
       print('Enviando solicitud HTTP para registro...');
@@ -103,4 +104,82 @@ class ApiService {
       return 500; // Error genérico
     }
   }
+
+  Future<http.Response> addAuto(
+      int usuarioId, String placa, String modelo, String dimensiones) async {
+    try {
+      var url = '$baseUrl/autos/addAuto'; // URL para agregar un nuevo auto
+      var headers = {'Content-Type': 'application/json'};
+      var body = json.encode({
+        'usuarioId': usuarioId,
+        'placa': placa,
+        'modelo': modelo,
+        'dimensiones': dimensiones,
+      });
+
+      print('Enviando solicitud HTTP para agregar auto...');
+
+      var response =
+          await http.post(Uri.parse(url), headers: headers, body: body);
+
+      print('Solicitud para agregar auto completada con éxito.');
+
+      // Retornar la respuesta HTTP
+      return response;
+    } catch (e) {
+      print('Error en la solicitud para agregar auto:');
+      print(e);
+      // Retornar un código de estado de error
+      return http.Response('Error en la solicitud para agregar auto', 500);
+    }
+  }
+
+  Future<int> addGaraje(String direccion, String lat, String lng, String dimensiones, String caracteristicasAdicionales, String disponibilidad) async {
+  try {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final usuarioId = prefs.getInt('userId');
+
+    if (usuarioId == null) {
+      // Manejar el caso donde usuarioId no está disponible
+      print('Error: UsuarioId no encontrado en SharedPreferences.');
+      return 404; // Código de error para usuario no encontrado
+    }
+
+    var url = '$baseUrl/garajes/addGaraje'; // URL para agregar un nuevo garaje
+    var headers = {'Content-Type': 'application/json'};
+    var body = json.encode({
+      'direccion': direccion,
+      'lat': lat,
+      'lng': lng,
+      'dimensiones': dimensiones,
+      'caracteristicasAdicionales': caracteristicasAdicionales,
+      'disponibilidad': disponibilidad,
+      'usuarioId': usuarioId,
+    });
+
+    print('Enviando solicitud HTTP para agregar garaje...');
+
+    var response =
+        await http.post(Uri.parse(url), headers: headers, body: body);
+
+    print('Solicitud para agregar garaje completada con éxito.');
+
+    if (response.statusCode == 201) {
+      print('Código de estado 201 - Garaje agregado exitosamente:');
+      // Puedes agregar lógica adicional aquí según sea necesario
+    } else {
+      print('Error en la respuesta al agregar garaje:');
+      print('Código de estado: ${response.statusCode}');
+      print('Mensaje: ${response.body}');
+    }
+
+    // Retornar el código de estado de la respuesta
+    return response.statusCode;
+  } catch (e) {
+    print('Error en la solicitud para agregar garaje:');
+    print(e);
+    return 500; // Error genérico
+  }
+}
+
 }

@@ -1,60 +1,50 @@
 import 'package:flutter/material.dart';
-
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class MapScreen extends StatefulWidget {
-  final LatLng initialPosition;
-
-  const MapScreen({Key? key, required this.initialPosition}) : super(key: key);
-
+class MapsScreen extends StatefulWidget {
   @override
-  _MapScreenState createState() => _MapScreenState();
+  _MapsScreenState createState() => _MapsScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapsScreenState extends State<MapsScreen> {
   late GoogleMapController _mapController;
-  late LatLng _selectedLocation;
 
   @override
   void initState() {
     super.initState();
-    _selectedLocation = widget.initialPosition;
+    _getCurrentLocation();
+  }
+
+  void _getCurrentLocation() async {
+    // Obtener la ubicación actual del usuario
+    // Puedes utilizar el paquete geolocator o algún otro método
+    // y establecer la cámara del mapa en esa ubicación
+    LatLng currentLocation =
+        LatLng(37.7749, -122.4194); // Ubicación de prueba (San Francisco)
+    _mapController.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: currentLocation,
+          zoom: 12.0,
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Seleccionar Ubicación'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.check),
-            onPressed: () {
-              Navigator.of(context).pop(_selectedLocation);
-            },
-          ),
-        ],
+        title: Text('Mapa de Google'),
       ),
       body: GoogleMap(
         initialCameraPosition: CameraPosition(
-          target: widget.initialPosition,
-          zoom: 15,
+          target:
+              LatLng(37.7749, -122.4194), // Ubicación de prueba (San Francisco)
+          zoom: 12.0,
         ),
-        onMapCreated: (controller) {
-          setState(() {
-            _mapController = controller;
-          });
-        },
-        onTap: (LatLng position) {
-          setState(() {
-            _selectedLocation = position;
-          });
-        },
-        markers: {
-          Marker(
-            markerId: MarkerId('selected-location'),
-            position: _selectedLocation,
-          ),
+        onMapCreated: (GoogleMapController controller) {
+          _mapController = controller;
         },
       ),
     );
