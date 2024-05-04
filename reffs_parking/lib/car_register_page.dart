@@ -11,7 +11,7 @@ class RegisterCarPage extends StatefulWidget {
 
 class _RegisterCarPageState extends State<RegisterCarPage> {
   List<Car> cars = [];
-  final List<XFile> _imageFiles = []; // Declarar la variable _imageFiles aquí
+  final List<XFile> _imageFiles = []; 
 
   final TextEditingController modeloController = TextEditingController();
   final TextEditingController colorController = TextEditingController();
@@ -36,20 +36,17 @@ class _RegisterCarPageState extends State<RegisterCarPage> {
             children: [
               TextFormField(
                 style: const TextStyle(
-                    color: Colors.black), // Aplicar color al texto
+                    color: Colors.black), 
                 decoration: InputDecoration(
                   labelText: 'Color',
                   labelStyle: const TextStyle(
-                      color: Color.fromARGB(255, 176, 39,
-                          39)), // Aplicar color al texto del label
+                      color: Color.fromARGB(255, 176, 39,39)), 
                   enabledBorder: OutlineInputBorder(
-                    // Aplicar color al borde cuando está habilitado
                     borderRadius: BorderRadius.circular(10),
                     borderSide: const BorderSide(
                         color: Color.fromARGB(255, 176, 39, 39)),
                   ),
                   focusedBorder: const OutlineInputBorder(
-                    // Aplicar color al borde cuando está enfocado
                     borderSide:
                         BorderSide(color: Color.fromARGB(255, 176, 39, 39)),
                   ),
@@ -70,16 +67,13 @@ class _RegisterCarPageState extends State<RegisterCarPage> {
                 decoration: InputDecoration(
                   labelText: 'Modelo',
                   labelStyle: const TextStyle(
-                      color: Color.fromARGB(255, 176, 39,
-                          39)), // Aplicar color al texto del label
+                      color: Color.fromARGB(255, 176, 39,39)), 
                   enabledBorder: OutlineInputBorder(
-                    // Aplicar color al borde cuando está habilitado
                     borderRadius: BorderRadius.circular(10),
                     borderSide: const BorderSide(
                         color: Color.fromARGB(255, 176, 39, 39)),
                   ),
                   focusedBorder: const OutlineInputBorder(
-                    // Aplicar color al borde cuando está enfocado
                     borderSide:
                         BorderSide(color: Color.fromARGB(255, 176, 39, 39)),
                   ),
@@ -121,20 +115,17 @@ class _RegisterCarPageState extends State<RegisterCarPage> {
               ),
               TextFormField(
                 style: const TextStyle(
-                    color: Colors.black), // Aplicar color al texto
+                    color: Colors.black), 
                 decoration: InputDecoration(
                   labelText: 'Numero de Placa',
                   labelStyle: const TextStyle(
-                      color: Color.fromARGB(255, 176, 39,
-                          39)), // Aplicar color al texto del label
+                      color: Color.fromARGB(255, 176, 39,39)), 
                   enabledBorder: OutlineInputBorder(
-                    // Aplicar color al borde cuando está habilitado
                     borderRadius: BorderRadius.circular(10),
                     borderSide: const BorderSide(
                         color: Color.fromARGB(255, 176, 39, 39)),
                   ),
                   focusedBorder: const OutlineInputBorder(
-                    // Aplicar color al borde cuando está enfocado
                     borderSide:
                         BorderSide(color: Color.fromARGB(255, 176, 39, 39)),
                   ),
@@ -155,16 +146,13 @@ class _RegisterCarPageState extends State<RegisterCarPage> {
                 decoration: InputDecoration(
                   labelText: 'Altura (cm)',
                   labelStyle: const TextStyle(
-                      color: Color.fromARGB(255, 176, 39,
-                          39)), // Aplicar color al texto del label
+                      color: Color.fromARGB(255, 176, 39, 39)),
                   enabledBorder: OutlineInputBorder(
-                    // Aplicar color al borde cuando está habilitado
                     borderRadius: BorderRadius.circular(10),
                     borderSide: const BorderSide(
                         color: Color.fromARGB(255, 176, 39, 39)),
                   ),
                   focusedBorder: const OutlineInputBorder(
-                    // Aplicar color al borde cuando está enfocado
                     borderSide:
                         BorderSide(color: Color.fromARGB(255, 176, 39, 39)),
                   ),
@@ -181,19 +169,16 @@ class _RegisterCarPageState extends State<RegisterCarPage> {
               ),
               TextFormField(
                 style: const TextStyle(
-                    color: Colors.black), // Aplicar color al texto
+                    color: Colors.black), 
                 decoration: const InputDecoration(
                   labelText: 'Ancho (cm)',
                   labelStyle: TextStyle(
-                      color: Color.fromARGB(255, 176, 39,
-                          39)), // Aplicar color al texto del label
+                      color: Color.fromARGB(255, 176, 39,39)), 
                   enabledBorder: OutlineInputBorder(
-                    // Aplicar color al borde cuando está habilitado
                     borderSide:
                         BorderSide(color: Color.fromARGB(255, 176, 39, 39)),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    // Aplicar color al borde cuando está enfocado
                     borderSide:
                         BorderSide(color: Color.fromARGB(255, 176, 39, 39)),
                   ),
@@ -214,16 +199,13 @@ class _RegisterCarPageState extends State<RegisterCarPage> {
                 decoration: InputDecoration(
                   labelText: 'Largo (cm)',
                   labelStyle: const TextStyle(
-                      color: Color.fromARGB(255, 176, 39,
-                          39)), // Aplicar color al texto del label
+                      color: Color.fromARGB(255, 176, 39,39)), // Aplicar color al texto del label
                   enabledBorder: OutlineInputBorder(
-                    // Aplicar color al borde cuando está habilitado
                     borderRadius: BorderRadius.circular(10),
                     borderSide: const BorderSide(
                         color: Color.fromARGB(255, 176, 39, 39)),
                   ),
                   focusedBorder: const OutlineInputBorder(
-                    // Aplicar color al borde cuando está enfocado
                     borderSide:
                         BorderSide(color: Color.fromARGB(255, 176, 39, 39)),
                   ),
@@ -235,22 +217,31 @@ class _RegisterCarPageState extends State<RegisterCarPage> {
                   return null;
                 },
               ),
+
+              const SizedBox(height:16),
               ElevatedButton(
                 onPressed: _getImages,
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white, 
-                  backgroundColor: const Color.fromARGB(255, 176, 39, 39), // Color del texto del botón
+                  backgroundColor: const Color.fromARGB(
+                      255, 176, 39, 39), // Color de fondo del botón
+                  minimumSize: const Size(
+                      100, 50), // Tamaño mínimo del botón (ancho x alto)
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 8), // Espaciado interno
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
                 ),
-                child: const Text('Seleccionar fotos'),
+                child: const Text(
+                  'Añadir Fotos',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white, // Color del texto
+                  ),
+                ),
               ),
-
               const SizedBox(height: 16),
-              // Mostrar las imágenes seleccionadas
-              _buildImagePreview(),             
-              
-               const SizedBox(
-                height: 16,
-              ),
+              _buildImagePreview(),   // Mostrar las imágenes seleccionadas         
               ElevatedButton(
                 onPressed: () {
                   setState(() {
@@ -277,12 +268,11 @@ class _RegisterCarPageState extends State<RegisterCarPage> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 16, vertical: 8), // Espaciado interno
                   shape: RoundedRectangleBorder(
-                    // Forma del botón
                     borderRadius: BorderRadius.circular(50),
                   ),
                 ),
                 child: const Text(
-                  'Añadir Auto',
+                  'Registrar Auto',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white, // Color del texto
@@ -309,16 +299,12 @@ class _RegisterCarPageState extends State<RegisterCarPage> {
 
   Future<void> _getImages() async {
     final picker = ImagePicker();
-    final List<XFile>? pickedFiles = await picker.pickMultiImage();
-    if (pickedFiles != null) {
-      setState(() {
-        _imageFiles.clear();
-        _imageFiles.addAll(pickedFiles);
-      });
-    } else {
-      print('No images selected.');
+    final List<XFile> pickedFiles = await picker.pickMultiImage();
+    setState(() {
+      _imageFiles.clear();
+      _imageFiles.addAll(pickedFiles);
+    });
     }
-  }
 
 
 
