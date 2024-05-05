@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Auto {
   final int usuarioId;
   final String placa;

@@ -205,6 +205,27 @@ Future<List<Garaje>> getGarajesById(int id) async {
     }
   }
 
+Future<List<Garaje>> getGarajesDisponibles() async {
+    try {
+      var url = '$baseUrl/garajes/getGarajesDisponibles'; // URL para obtener el garaje por ID
+      var response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body) as List;
+        return jsonResponse.map((data) => Garaje.fromJson(data)).toList();
+      } else {
+        print('Error en la respuesta para obtener garajes:');
+        print('Código de estado: ${response.statusCode}');
+        print('Mensaje: ${response.body}');
+        return [];
+      }
+    } catch (e) {
+      print('Error en la solicitud para obtener garajes:');
+      print(e);
+      return [];
+    }
+  }
+
 Future<void> setGarajeDisponible(int id) async {
   try {
     var url = '$baseUrl/garajes/setGarajeDisponible/$id';
@@ -261,4 +282,6 @@ Future<void> setGarajeOcupado(int id) async {
       return [];
     }
   }
+
+  
 }

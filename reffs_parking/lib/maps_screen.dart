@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:reffs_parking/car_register_page.dart';
 import 'package:reffs_parking/my_garage_page.dart';
 import 'package:reffs_parking/park_register_page.dart';
+import 'package:reffs_parking/reservas_page.dart';
 
 
 class MapsScreen extends StatefulWidget {
