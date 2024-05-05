@@ -1,11 +1,12 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
 import 'package:reffs_parking/car_register_page.dart';
 import 'package:reffs_parking/my_cars_page.dart';
 import 'package:reffs_parking/my_garage_page.dart';
 import 'package:reffs_parking/park_register_page.dart';
 import 'package:reffs_parking/reservas_page.dart';
-
 
 class MapsScreen extends StatefulWidget {
   final double initialLatitud;
@@ -21,42 +22,74 @@ class MapsScreen extends StatefulWidget {
 }
 
 class _MapsScreenState extends State<MapsScreen> {
-  Set<Marker> _markers = {}; // Conjunto de marcadores
+  Set<Marker> _markers = {};
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadGarajes();
+  }
+
+  Future<void> _loadGarajes() async {
+    try {
+      final response = await http.get(Uri.parse('https://parkingsystem-hjcb.onrender.com/garajes/getGarajesDisponibles'));
+
+      if (response.statusCode == 200) {
+        List<dynamic> garajesData = json.decode(response.body);
+
+        for (var garajeData in garajesData) {
+          double lat = double.parse(garajeData['lat']);
+          double lng = double.parse(garajeData['lng']);
+
+          _markers.add(
+            Marker(
+              markerId: MarkerId(garajeData['id_garaje'].toString()),
+              position: LatLng(lat, lng),
+              icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+            ),
+          );
+        }
+
+        setState(() {});
+      } else {
+        throw Exception('Failed to load garajes');
+      }
+    } catch (e) {
+      print('Error fetching garajes: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Añadir el marcador del garaje al conjunto de marcadores
-    _markers.add(
-      Marker(
-        markerId: MarkerId('garage_marker'), // Identificador único del marcador
-        position: LatLng(widget.initialLatitud, widget.initialLongitud),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed), // Establecer el color del marcador a rojo
-        infoWindow: InfoWindow(title: 'Ubicación del Garaje', snippet: 'Descripción del Garaje'),
-      ),
-    );
-
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Mapa'),
+        leading: IconButton(
+          icon: Icon(Icons.menu),
+          color: Colors.white, // Color del icono blanco
+          onPressed: () {
+            _scaffoldKey.currentState?.openDrawer();
+          },
+        ),
+        title: Text(
+          'Parking System',
+          style: TextStyle(color: Colors.white), // Color del texto blanco
+        ),
+        backgroundColor: Colors.red,
       ),
-      drawer: Drawer(
-        child: Sidebar(),
-      ),
+      drawer: Sidebar(),
       body: GoogleMap(
         initialCameraPosition: CameraPosition(
-          target: LatLng(widget.initialLatitud, widget.initialLongitud),
+          target: LatLng(-17.7833, -63.1667), 
           zoom: 12.0,
         ),
-        markers: _markers, // Mostrar los marcadores en el mapa
-        onMapCreated: (GoogleMapController controller) {
-          // No es necesario asignar el controlador aquí
-          // _mapController = controller;
-        },
+        markers: _markers,
+        onMapCreated: (GoogleMapController controller) {},
       ),
     );
   }
 }
-
 
 class Sidebar extends StatelessWidget {
   @override
@@ -84,7 +117,7 @@ class Sidebar extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
-                ),                 
+                ),
               ],
             ),
           ),
@@ -127,12 +160,12 @@ class Sidebar extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
-                ),                
+                ),
               ],
             ),
           ),
           SizedBox(height: 20.0),
-           GestureDetector(
+          GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
@@ -170,7 +203,7 @@ class Sidebar extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: Colors.white, // Color de texto blanco
                   ),
-                ),                
+                ),
               ],
             ),
           ),
