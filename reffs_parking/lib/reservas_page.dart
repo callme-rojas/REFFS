@@ -49,8 +49,6 @@ class _ReservasPage extends State<ReservasPage> {
   }
 
   Future<List<Garaje>> _getGarajesDisponibles() async {
-
-
     return _apiService.getGarajesDisponibles();
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:reffs_parking/car_register_page.dart';
+import 'package:reffs_parking/my_cars_page.dart';
 import 'package:reffs_parking/my_garage_page.dart';
 import 'package:reffs_parking/park_register_page.dart';
 import 'package:reffs_parking/reservas_page.dart';
@@ -132,12 +133,12 @@ class Sidebar extends StatelessWidget {
           ),
           SizedBox(height: 20.0),
            GestureDetector(
-            /*onTap: () {
+            onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => RegisterGaragePage()),
+                MaterialPageRoute(builder: (context) => MyAutoPage()),
               );
-            },*/
+            },
             child: Column(
               children: [
                 Text(
