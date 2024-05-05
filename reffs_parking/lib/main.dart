@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reffs_parking/login_page.dart';
+import 'package:reffs_parking/my_garage_page.dart';
 
 void main() {
   runApp(const MyApp());

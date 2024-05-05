@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:reffs_parking/objects/garaje.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
@@ -179,6 +180,63 @@ class ApiService {
     print('Error en la solicitud para agregar garaje:');
     print(e);
     return 500; // Error genérico
+  }
+}
+
+Future<List<Garaje>> getGarajesById(int id) async {
+    try {
+      var url = '$baseUrl/garajes/getGarajesById/$id'; // URL para obtener el garaje por ID
+      var response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body) as List;
+        return jsonResponse.map((data) => Garaje.fromJson(data)).toList();
+      } else {
+        print('Error en la respuesta para obtener garaje por ID:');
+        print('Código de estado: ${response.statusCode}');
+        print('Mensaje: ${response.body}');
+        return [];
+      }
+    } catch (e) {
+      print('Error en la solicitud para obtener garaje por ID:');
+      print(e);
+      return [];
+    }
+  }
+
+Future<void> setGarajeDisponible(int id) async {
+  try {
+    var url = '$baseUrl/garajes/setGarajeDisponible/$id';
+    var response = await http.put(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      print('Código de estado 200 - Garaje marcado como disponible.');
+    } else {
+      print('Error en la respuesta para marcar garaje como disponible:');
+      print('Código de estado: ${response.statusCode}');
+      print('Mensaje: ${response.body}');
+    }
+  } catch (e) {
+    print('Error en la solicitud para marcar garaje como disponible:');
+    print(e);
+  }
+}
+
+Future<void> setGarajeOcupado(int id) async {
+  try {
+    var url = '$baseUrl/garajes/setGarajeOcupado/$id';
+    var response = await http.put(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      print('Código de estado 200 - Garaje marcado como ocupado.');
+    } else {
+      print('Error en la respuesta para marcar garaje como ocupado:');
+      print('Código de estado: ${response.statusCode}');
+      print('Mensaje: ${response.body}');
+    }
+  } catch (e) {
+    print('Error en la solicitud para marcar garaje como ocupado:');
+    print(e);
   }
 }
 
