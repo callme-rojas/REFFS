@@ -1,7 +1,10 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, sort_child_properties_last
+// ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:reffs_parking/api/api_service.dart';
+import 'package:reffs_parking/objects/auto.dart';
 import 'package:reffs_parking/objects/garaje.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ReservasCard extends StatelessWidget {
   final Garaje garaje;
@@ -20,8 +23,7 @@ class ReservasCard extends StatelessWidget {
             height: 150,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                    'assets/images/logo_univalle.png'), // Ruta de la imagen del garaje
+                image: AssetImage('assets/images/logo_univalle.png'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -80,51 +82,109 @@ class ReservasCard extends StatelessWidget {
     );
   }
 
-  void _showReservationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Reservar Garaje'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              TextField(
-                decoration: InputDecoration(labelText: 'Hora de entrada (timestamp)'),
-                keyboardType: TextInputType.number,
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Hora de salida (timestamp)'),
-                keyboardType: TextInputType.number,
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: 'Precio ofrecido'),
-                keyboardType: TextInputType.number,
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancelar'),
+void _showReservationDialog(BuildContext context) async {
+  // Obtén el tiempo actual en formato UTC para start y end time
+  DateTime startTime = DateTime.now().toUtc();
+  DateTime endTime = startTime.add(Duration(hours: 1)); // Ejemplo: 1 hora después del startTime
+
+  // Lista de horas disponibles (ejemplo)
+  List<String> horasDisponibles = ['08:00', '09:00', '10:00'];
+
+  // Precio de la reserva (ejemplo)
+  double? price;
+
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  int userId = prefs.getInt('userId') ?? 0;
+
+  // Instantiate ApiService with your base URL
+  ApiService apiService = ApiService(baseUrl: 'https://parkingsystem-hjcb.onrender.com');
+
+  // Get the autos for the current user
+  List<Auto> autos = await apiService.getAutosById(userId);
+
+  // Extract the names of the autos
+  List<String> nombresAutos = autos.map((auto) => auto.modelo).toList();
+
+  // Variables to hold user inputs
+  String? selectedAuto;
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: Text('Reservar Garaje'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                DropdownButtonFormField<String>(
+                  value: selectedAuto,
+                  items: nombresAutos.map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedAuto = newValue; // Update selectedAuto with nullable type
+                    });
+                  },
+                  decoration: InputDecoration(labelText: 'Seleccionar Auto'),
+                ),
+                TextField(
+                  decoration: InputDecoration(labelText: 'Precio ofrecido'),
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    price = double.tryParse(value);
+                  },
+                ),
+              ],
             ),
-            ElevatedButton(
-              onPressed: () {
-                // Aquí puedes manejar la lógica de la reserva
-                Navigator.of(context).pop();
-              },
-              child: Text('Reservar'),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                  Color.fromARGB(255, 176, 39, 39),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Cancelar'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  if (selectedAuto != null && price != null) {
+                    int statusCode = await apiService.createReservation(
+                      garaje.idGaraje,
+                      autos.firstWhere((auto) => auto.modelo == selectedAuto).idAuto,
+                      startTime.toIso8601String(), // Use ISO8601 string directly
+                      endTime.toIso8601String(), // Use ISO8601 string directly
+                      horasDisponibles,
+                      price!,
+                    );
+
+                    if (statusCode == 201) {
+                      Navigator.of(context).pop();
+                      // Show success message or navigate to a success screen
+                    } else {
+                      // Handle reservation creation failure
+                      // Show error message or handle accordingly
+                    }
+                  } else {
+                    // Handle case where no auto is selected or price is invalid
+                    // Show error message or handle accordingly
+                  }
+                },
+                child: Text('Reservar'),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    Color.fromARGB(255, 176, 39, 39),
+                  ),
                 ),
               ),
-            ),
-          ],
-        );
-      },
-    );
-  }
+            ],
+          );
+        },
+      );
+    },
+  );
+}
 }
