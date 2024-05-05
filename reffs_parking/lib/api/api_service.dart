@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:reffs_parking/objects/auto.dart';
@@ -136,57 +138,65 @@ class ApiService {
     }
   }
 
-  Future<int> addGaraje(String direccion, String lat, String lng, String dimensiones, String caracteristicasAdicionales, String disponibilidad) async {
-  try {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final usuarioId = prefs.getInt('userId');
-
-    if (usuarioId == null) {
-      // Manejar el caso donde usuarioId no está disponible
-      print('Error: UsuarioId no encontrado en SharedPreferences.');
-      return 404; // Código de error para usuario no encontrado
-    }
-
-    var url = '$baseUrl/garajes/addGaraje'; // URL para agregar un nuevo garaje
-    var headers = {'Content-Type': 'application/json'};
-    var body = json.encode({
-      'direccion': direccion,
-      'lat': lat,
-      'lng': lng,
-      'dimensiones': dimensiones,
-      'caracteristicasAdicionales': caracteristicasAdicionales,
-      'disponibilidad': disponibilidad,
-      'usuarioId': usuarioId,
-    });
-
-    print('Enviando solicitud HTTP para agregar garaje...');
-
-    var response =
-        await http.post(Uri.parse(url), headers: headers, body: body);
-
-    print('Solicitud para agregar garaje completada con éxito.');
-
-    if (response.statusCode == 201) {
-      print('Código de estado 201 - Garaje agregado exitosamente:');
-      // Puedes agregar lógica adicional aquí según sea necesario
-    } else {
-      print('Error en la respuesta al agregar garaje:');
-      print('Código de estado: ${response.statusCode}');
-      print('Mensaje: ${response.body}');
-    }
-
-    // Retornar el código de estado de la respuesta
-    return response.statusCode;
-  } catch (e) {
-    print('Error en la solicitud para agregar garaje:');
-    print(e);
-    return 500; // Error genérico
-  }
-}
-
-Future<List<Garaje>> getGarajesById(int id) async {
+  Future<int> addGaraje(
+      String direccion,
+      String lat,
+      String lng,
+      String dimensiones,
+      String caracteristicasAdicionales,
+      String disponibilidad) async {
     try {
-      var url = '$baseUrl/garajes/getGarajesById/$id'; // URL para obtener el garaje por ID
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final usuarioId = prefs.getInt('userId');
+
+      if (usuarioId == null) {
+        // Manejar el caso donde usuarioId no está disponible
+        print('Error: UsuarioId no encontrado en SharedPreferences.');
+        return 404; // Código de error para usuario no encontrado
+      }
+
+      var url =
+          '$baseUrl/garajes/addGaraje'; // URL para agregar un nuevo garaje
+      var headers = {'Content-Type': 'application/json'};
+      var body = json.encode({
+        'direccion': direccion,
+        'lat': lat,
+        'lng': lng,
+        'dimensiones': dimensiones,
+        'caracteristicasAdicionales': caracteristicasAdicionales,
+        'disponibilidad': disponibilidad,
+        'usuarioId': usuarioId,
+      });
+
+      print('Enviando solicitud HTTP para agregar garaje...');
+
+      var response =
+          await http.post(Uri.parse(url), headers: headers, body: body);
+
+      print('Solicitud para agregar garaje completada con éxito.');
+
+      if (response.statusCode == 201) {
+        print('Código de estado 201 - Garaje agregado exitosamente:');
+        // Puedes agregar lógica adicional aquí según sea necesario
+      } else {
+        print('Error en la respuesta al agregar garaje:');
+        print('Código de estado: ${response.statusCode}');
+        print('Mensaje: ${response.body}');
+      }
+
+      // Retornar el código de estado de la respuesta
+      return response.statusCode;
+    } catch (e) {
+      print('Error en la solicitud para agregar garaje:');
+      print(e);
+      return 500; // Error genérico
+    }
+  }
+
+  Future<List<Garaje>> getGarajesById(int id) async {
+    try {
+      var url =
+          '$baseUrl/garajes/getGarajesById/$id'; // URL para obtener el garaje por ID
       var response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
@@ -205,9 +215,10 @@ Future<List<Garaje>> getGarajesById(int id) async {
     }
   }
 
-Future<List<Garaje>> getGarajesDisponibles() async {
+  Future<List<Garaje>> getGarajesDisponibles() async {
     try {
-      var url = '$baseUrl/garajes/getGarajesDisponibles'; // URL para obtener el garaje por ID
+      var url =
+          '$baseUrl/garajes/getGarajesDisponibles'; // URL para obtener el garaje por ID
       var response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
@@ -226,45 +237,46 @@ Future<List<Garaje>> getGarajesDisponibles() async {
     }
   }
 
-Future<void> setGarajeDisponible(int id) async {
-  try {
-    var url = '$baseUrl/garajes/setGarajeDisponible/$id';
-    var response = await http.put(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      print('Código de estado 200 - Garaje marcado como disponible.');
-    } else {
-      print('Error en la respuesta para marcar garaje como disponible:');
-      print('Código de estado: ${response.statusCode}');
-      print('Mensaje: ${response.body}');
-    }
-  } catch (e) {
-    print('Error en la solicitud para marcar garaje como disponible:');
-    print(e);
-  }
-}
-
-Future<void> setGarajeOcupado(int id) async {
-  try {
-    var url = '$baseUrl/garajes/setGarajeOcupado/$id';
-    var response = await http.put(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      print('Código de estado 200 - Garaje marcado como ocupado.');
-    } else {
-      print('Error en la respuesta para marcar garaje como ocupado:');
-      print('Código de estado: ${response.statusCode}');
-      print('Mensaje: ${response.body}');
-    }
-  } catch (e) {
-    print('Error en la solicitud para marcar garaje como ocupado:');
-    print(e);
-  }
-}
-
- Future<List<Auto>> getAutosById(int id) async {
+  Future<void> setGarajeDisponible(int id) async {
     try {
-      var url = '$baseUrl/autos/getAutosById/$id'; // URL para obtener el auto por ID
+      var url = '$baseUrl/garajes/setGarajeDisponible/$id';
+      var response = await http.put(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        print('Código de estado 200 - Garaje marcado como disponible.');
+      } else {
+        print('Error en la respuesta para marcar garaje como disponible:');
+        print('Código de estado: ${response.statusCode}');
+        print('Mensaje: ${response.body}');
+      }
+    } catch (e) {
+      print('Error en la solicitud para marcar garaje como disponible:');
+      print(e);
+    }
+  }
+
+  Future<void> setGarajeOcupado(int id) async {
+    try {
+      var url = '$baseUrl/garajes/setGarajeOcupado/$id';
+      var response = await http.put(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        print('Código de estado 200 - Garaje marcado como ocupado.');
+      } else {
+        print('Error en la respuesta para marcar garaje como ocupado:');
+        print('Código de estado: ${response.statusCode}');
+        print('Mensaje: ${response.body}');
+      }
+    } catch (e) {
+      print('Error en la solicitud para marcar garaje como ocupado:');
+      print(e);
+    }
+  }
+
+  Future<List<Auto>> getAutosById(int id) async {
+    try {
+      var url =
+          '$baseUrl/autos/getAutosById/$id'; // URL para obtener el auto por ID
       var response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
@@ -283,5 +295,62 @@ Future<void> setGarajeOcupado(int id) async {
     }
   }
 
-  
+  Future<int> createReservation(
+    int fkIdGaraje,
+    int fkIdAuto,
+    String startTime,
+    String endTime,
+    List<String> horasDisponibles,
+    double precio,
+  ) async {
+    try {
+      var url = '$baseUrl/reservaciones/createReservacion';
+      var headers = {'Content-Type': 'application/json'};
+      var body = json.encode({
+        'fk_id_garaje': fkIdGaraje,
+        'fk_id_auto': fkIdAuto,
+        'start_time': startTime,
+        'end_time': endTime,
+        'horas_disponibles': horasDisponibles,
+        'precio': precio,
+      });
+
+      print('Enviando solicitud HTTP para crear reservación...');
+
+      var response =
+          await http.post(Uri.parse(url), headers: headers, body: body);
+
+      print('Solicitud de creación de reservación completada con éxito.');
+
+      if (response.statusCode == 201) {
+        var jsonResponse = jsonDecode(response.body);
+        var reservationId = jsonResponse['id'] as int?;
+        var message = jsonResponse['message'] as String?;
+
+        if (reservationId != null) {
+          print('ID de reservación creada: $reservationId');
+        } else {
+          print('Error: ID de reservación nulo en la respuesta JSON');
+        }
+
+        if (message != null) {
+          print('Mensaje de la respuesta: $message');
+        } else {
+          print('Error: Mensaje nulo en la respuesta JSON');
+        }
+
+        // Puedes procesar más la respuesta según tus necesidades
+      } else {
+        print('Error en la respuesta para crear reservación:');
+        print('Código de estado: ${response.statusCode}');
+        print('Mensaje: ${response.body}');
+      }
+
+      return response.statusCode;
+    } catch (e) {
+      print('Error en la solicitud para crear reservación:');
+      print(e);
+      return 500; // Error genérico
+    }
+  }
 }

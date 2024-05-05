@@ -1,12 +1,14 @@
 class Auto {
-  final int usuarioId;
+  final int idAuto;
+  final int fkIdUsuario;
   final String placa;
   final String modelo;
   final String dimensiones;
   bool ocupado;
 
   Auto({
-    required this.usuarioId,
+    required this.idAuto,
+    required this.fkIdUsuario,
     required this.placa,
     required this.modelo,
     required this.dimensiones,
@@ -15,7 +17,8 @@ class Auto {
 
   factory Auto.fromJson(Map<String, dynamic> json) {
     return Auto(
-      usuarioId: json['usuarioId'] ?? 0,
+      idAuto: json['id_auto'] ?? 0,
+      fkIdUsuario: json['fk_id_usuario'] ?? 0,
       placa: json['placa'] ?? '',
       modelo: json['modelo'] ?? '',
       dimensiones: json['dimensiones'] ?? '',
