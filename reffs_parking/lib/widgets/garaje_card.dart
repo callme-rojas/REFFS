@@ -82,11 +82,11 @@ class _GarajeCardState extends State<GarajeCard> {
                       onChanged: (value) {
                         setState(() {
                           _disponibilidad = value;
-                          _updateDisponibilidad(value); // Actualiza la disponibilidad cuando cambia el Switch
                         });
                         String newDisponibilidad =
                             value ? 'DISPONIBLE' : 'OCUPADO';
                         print('Disponibilidad cambiada a: $newDisponibilidad');
+                        _updateDisponibilidad(newDisponibilidad); // Llama al método para actualizar la disponibilidad
                       },
                     ),
                   ],
@@ -100,10 +100,9 @@ class _GarajeCardState extends State<GarajeCard> {
   }
 
   // Método para actualizar la disponibilidad del garaje
-  void _updateDisponibilidad(bool newDisponibilidad) {
-    String disponibilidad = newDisponibilidad ? 'DISPONIBLE' : 'OCUPADO';
-    if (disponibilidad != widget.garaje.disponibilidad) {
-      if (disponibilidad == 'DISPONIBLE') {
+  void _updateDisponibilidad(String newDisponibilidad) {
+    if (newDisponibilidad != widget.garaje.disponibilidad) {
+      if (newDisponibilidad == 'DISPONIBLE') {
         _apiService.setGarajeDisponible(widget.garaje.idGaraje);
       } else {
         _apiService.setGarajeOcupado(widget.garaje.idGaraje);

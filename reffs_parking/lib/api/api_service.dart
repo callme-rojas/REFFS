@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:reffs_parking/objects/auto.dart';
 import 'package:reffs_parking/objects/garaje.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -240,4 +241,24 @@ Future<void> setGarajeOcupado(int id) async {
   }
 }
 
+ Future<List<Auto>> getAutosById(int id) async {
+    try {
+      var url = '$baseUrl/autos/getAutosById/$id'; // URL para obtener el auto por ID
+      var response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body) as List;
+        return jsonResponse.map((data) => Auto.fromJson(data)).toList();
+      } else {
+        print('Error en la respuesta para obtener auto por ID:');
+        print('Código de estado: ${response.statusCode}');
+        print('Mensaje: ${response.body}');
+        return [];
+      }
+    } catch (e) {
+      print('Error en la solicitud para obtener auto por ID:');
+      print(e);
+      return [];
+    }
+  }
 }
