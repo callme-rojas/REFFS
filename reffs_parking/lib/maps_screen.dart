@@ -4,78 +4,63 @@ import 'package:reffs_parking/car_register_page.dart';
 import 'package:reffs_parking/my_garage_page.dart';
 import 'package:reffs_parking/park_register_page.dart';
 
+
 class MapsScreen extends StatefulWidget {
+  final double initialLatitud;
+  final double initialLongitud;
+
+  MapsScreen({
+    required this.initialLatitud,
+    required this.initialLongitud,
+  });
+
   @override
   _MapsScreenState createState() => _MapsScreenState();
 }
 
 class _MapsScreenState extends State<MapsScreen> {
-  late GoogleMapController _mapController;
-
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentLocation();
-  }
-
-  void _getCurrentLocation() async {
-    // Obtener la ubicación actual del usuario
-    // Puedes utilizar el paquete geolocator o algún otro método
-    // y establecer la cámara del mapa en esa ubicación
-    LatLng currentLocation =
-        LatLng(-17.722289, -63.174411); // Ubicación de prueba (Santa Cruz)
-    _mapController.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: currentLocation,
-          zoom: 12.0,
-        ),
-      ),
-    );
-  }
+  Set<Marker> _markers = {}; // Conjunto de marcadores
 
   @override
   Widget build(BuildContext context) {
+    // Añadir el marcador del garaje al conjunto de marcadores
+    _markers.add(
+      Marker(
+        markerId: MarkerId('garage_marker'), // Identificador único del marcador
+        position: LatLng(widget.initialLatitud, widget.initialLongitud),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed), // Establecer el color del marcador a rojo
+        infoWindow: InfoWindow(title: 'Ubicación del Garaje', snippet: 'Descripción del Garaje'),
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 213, 15, 15),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: Icon(Icons.menu),
-              color: Color.fromARGB(255, 255, 255, 255), // Cambiar a un ícono de menú
-              onPressed: () {
-                Scaffold.of(context).openDrawer(); // Abre el drawer
-              },
-            );
-          },
-        ),
-        title: Text(
-          'Parkyng System',
-          style: TextStyle(color: Colors.white), // Cambia el color del texto a blanco
-        ),
+        title: const Text('Mapa'),
       ),
       drawer: Drawer(
         child: Sidebar(),
       ),
       body: GoogleMap(
         initialCameraPosition: CameraPosition(
-          target: LatLng(-17.722289, -63.174411), // Ubicación de prueba (Santa Cruz)
+          target: LatLng(widget.initialLatitud, widget.initialLongitud),
           zoom: 12.0,
         ),
+        markers: _markers, // Mostrar los marcadores en el mapa
         onMapCreated: (GoogleMapController controller) {
-          _mapController = controller;
+          // No es necesario asignar el controlador aquí
+          // _mapController = controller;
         },
       ),
     );
   }
 }
 
+
 class Sidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color.fromARGB(255, 176, 39, 39), // Color de fondo
+      color: Color.fromARGB(255, 176, 39, 39),
       padding: EdgeInsets.all(50.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +80,7 @@ class Sidebar extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white, // Color de texto blanco
+                    color: Colors.white,
                   ),
                 ),                 
               ],
@@ -116,10 +101,10 @@ class Sidebar extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white, // Color de texto blanco
+                    color: Colors.white,
                   ),
                 ),
-                SizedBox(height: 8.0), // SizedBox entre el texto y el botón
+                SizedBox(height: 8.0),
               ],
             ),
           ),
@@ -138,7 +123,7 @@ class Sidebar extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white, // Color de texto blanco
+                    color: Colors.white,
                   ),
                 ),                
               ],
@@ -159,10 +144,31 @@ class Sidebar extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white, // Color de texto blanco
+                    color: Colors.white,
                   ),
                 ),
-                SizedBox(height: 8.0), // SizedBox entre el texto y el botón
+                SizedBox(height: 8.0),
+              ],
+            ),
+          ),
+          SizedBox(height: 8.0),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ReservasPage()),
+              );
+            },
+            child: Column(
+              children: [
+                Text(
+                  'Reservar Garajes',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white, // Color de texto blanco
+                  ),
+                ),                
               ],
             ),
           ),
@@ -170,10 +176,4 @@ class Sidebar extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: MapsScreen(),
-  ));
 }

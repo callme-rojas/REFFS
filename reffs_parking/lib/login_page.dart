@@ -20,8 +20,14 @@ class LoginPage extends StatelessWidget {
         // Si el inicio de sesión es exitoso, redirige a la página CarRegisterPage
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => MapsScreen()),
+          MaterialPageRoute(
+            builder: (context) => MapsScreen(
+              initialLatitud: 0.0, // Valor predeterminado para latitud
+              initialLongitud: 0.0, // Valor predeterminado para longitud
+            ),
+          ),
         );
+
       } else {
         // Maneja los casos de error de inicio de sesión según sea necesario
         print('Error en el inicio de sesión');

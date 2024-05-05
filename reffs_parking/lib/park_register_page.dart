@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:reffs_parking/api/api_service.dart';
+import 'package:reffs_parking/maps_screen.dart'; // Importa la clase MapsScreen
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterGaragePage extends StatefulWidget {
@@ -19,28 +20,22 @@ class _RegisterGaragePageState extends State<RegisterGaragePage> {
   final ApiService _apiService =
       ApiService(baseUrl: 'https://parkingsystem-hjcb.onrender.com');
 
-  // Función para obtener la ubicación actual del dispositivo
   Future<void> _getCurrentLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Verificar si los servicios de ubicación están habilitados
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Servicios de ubicación no habilitados, mostrar un mensaje al usuario
       print('Servicios de ubicación deshabilitados.');
       return;
     }
 
-    // Solicitar permisos de ubicación al usuario
     permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
-      // Permiso denegado por el usuario, mostrar un mensaje al usuario
       print('Permiso de ubicación denegado.');
       return;
     }
 
-    // Obtener la ubicación actual
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
 
@@ -77,6 +72,16 @@ class _RegisterGaragePageState extends State<RegisterGaragePage> {
 
     if (response == 201) {
       print('Garaje registrado exitosamente.');
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MapsScreen(
+            initialLatitud: double.parse(latitud),
+            initialLongitud: double.parse(longitud),
+          ),
+        ),
+      );
     } else {
       print('Error al registrar el garaje. Código de estado: $response');
     }
@@ -144,7 +149,7 @@ class _RegisterGaragePageState extends State<RegisterGaragePage> {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+                        const SizedBox(height: 16),
             TextFormField(
               controller: dimensionesController,
               decoration: InputDecoration(
@@ -166,23 +171,6 @@ class _RegisterGaragePageState extends State<RegisterGaragePage> {
               controller: caracteristicasController,
               decoration: InputDecoration(
                 labelText: 'Características Adicionales',
-                labelStyle:
-                    TextStyle(color: const Color.fromARGB(255, 176, 39, 39)),
-                focusedBorder: OutlineInputBorder(
-                  borderSide:
-                      const BorderSide(color: const Color.fromARGB(255, 176, 39, 39)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide:
-                      const BorderSide(color: const Color.fromARGB(255, 176, 39, 39)),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: disponibilidadController,
-              decoration: InputDecoration(
-                labelText: 'Disponibilidad',
                 labelStyle:
                     TextStyle(color: const Color.fromARGB(255, 176, 39, 39)),
                 focusedBorder: OutlineInputBorder(
