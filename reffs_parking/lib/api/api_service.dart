@@ -1,8 +1,10 @@
+// ignore_for_file: avoid_print
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:reffs_parking/objects/auto.dart';
 import 'package:reffs_parking/objects/garaje.dart';
+import 'package:reffs_parking/objects/reservacion.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
@@ -79,7 +81,8 @@ class ApiService {
         'email': email,
         'password': password,
         'nombre': username,
-        'telefono': telefono, // Incluir el campo telefono en el cuerpo de la solicituD
+        'telefono':
+            telefono, // Incluir el campo telefono en el cuerpo de la solicituD
       });
 
       print('Enviando solicitud HTTP para registro...');
@@ -347,6 +350,68 @@ class ApiService {
       return response.statusCode;
     } catch (e) {
       print('Error en la solicitud para crear reservación:');
+      print(e);
+      return 500; // Error genérico
+    }
+  }
+
+  Future<List<Reservacion>> getReservacionesPendientes(int id) async {
+    try {
+      var url = '$baseUrl/reservaciones/getReservacionesPendientes/$id';
+      var response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body) as List;
+        return jsonResponse.map((data) => Reservacion.fromJson(data)).toList();
+      } else {
+        print('Error en la respuesta para obtener reservaciones pendientes:');
+        print('Código de estado: ${response.statusCode}');
+        print('Mensaje: ${response.body}');
+        return [];
+      }
+    } catch (e) {
+      print('Error en la solicitud para obtener reservaciones pendientes:');
+      print(e);
+      return [];
+    }
+  }
+  Future<int> confirmReservacion(int id) async {
+    try {
+      var url = '$baseUrl/reservaciones/confirmReservacion/$id';
+      var response = await http.put(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        print('Reservación confirmada exitosamente.');
+      } else {
+        print('Error al confirmar la reservación:');
+        print('Código de estado: ${response.statusCode}');
+        print('Mensaje: ${response.body}');
+      }
+
+      return response.statusCode;
+    } catch (e) {
+      print('Error en la solicitud para confirmar la reservación:');
+      print(e);
+      return 500; // Error genérico
+    }
+  }
+
+  Future<int> rejectReservacion(int id) async {
+    try {
+      var url = '$baseUrl/reservaciones/rejectReservacion/$id';
+      var response = await http.put(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        print('Reservación rechazada exitosamente.');
+      } else {
+        print('Error al rechazar la reservación:');
+        print('Código de estado: ${response.statusCode}');
+        print('Mensaje: ${response.body}');
+      }
+
+      return response.statusCode;
+    } catch (e) {
+      print('Error en la solicitud para rechazar la reservación:');
       print(e);
       return 500; // Error genérico
     }

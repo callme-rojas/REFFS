@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_literals_to_create_immutables
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -7,6 +9,7 @@ import 'package:reffs_parking/my_cars_page.dart';
 import 'package:reffs_parking/my_garage_page.dart';
 import 'package:reffs_parking/park_register_page.dart';
 import 'package:reffs_parking/reservas_page.dart';
+import 'package:reffs_parking/reservas_pendientes.dart';
 
 class MapsScreen extends StatefulWidget {
   final double initialLatitud;
@@ -198,6 +201,26 @@ class Sidebar extends StatelessWidget {
               children: [
                 Text(
                   'Reservar Garajes',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white, // Color de texto blanco
+                  ),
+                ),
+              ],
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ReservasPendientesPage()),
+              );
+            },
+            child: Column(
+              children: [
+                Text(
+                  'Reservas pendientes',
                   style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
