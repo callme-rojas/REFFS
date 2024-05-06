@@ -59,8 +59,7 @@ class ReservasPendientesCard extends StatelessWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        // Llama a la función para confirmar la reservación
-                        apiService.confirmReservacion(reserva.idReservacion);
+                        _confirmReservation(context);
                       },
                       child: Text(
                         'Aceptar',
@@ -74,8 +73,7 @@ class ReservasPendientesCard extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        // Llama a la función para rechazar la reservación
-                        apiService.rejectReservacion(reserva.idReservacion);
+                        _rejectReservation(context);
                       },
                       child: Text(
                         'Rechazar',
@@ -95,5 +93,27 @@ class ReservasPendientesCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _confirmReservation(BuildContext context) async {
+    // Llama a la función para confirmar la reservación
+    apiService.confirmReservacion(reserva.idReservacion)
+      .then((statusCode) {
+        if (statusCode == 200) {
+          // Vuelve a la pantalla anterior
+          Navigator.pop(context);
+        }
+      });
+  }
+
+  void _rejectReservation(BuildContext context) async {
+    // Llama a la función para rechazar la reservación
+    apiService.rejectReservacion(reserva.idReservacion)
+      .then((statusCode) {
+        if (statusCode == 200) {
+          // Vuelve a la pantalla anterior
+          Navigator.pop(context);
+        }
+      });
   }
 }
