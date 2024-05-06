@@ -3,26 +3,31 @@ import 'package:reffs_parking/login_page.dart';
 import 'api/api_service.dart';
 
 class SignupPage extends StatelessWidget {
-  const SignupPage({Key? key});
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController nombreController = TextEditingController();
+  final TextEditingController telefonoController = TextEditingController();
+
+  final ApiService apiService =
+      ApiService(baseUrl: 'https://parkingsystem-hjcb.onrender.com');
+
+  void _register(BuildContext context) async {
+    String email = emailController.text;
+    String password = passwordController.text;
+    String nombre = nombreController.text;
+    String telefono = telefonoController.text;
+
+    await apiService.register(email, password, nombre, telefono);
+
+    // Después del registro, puedes navegar a la página de inicio de sesión
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final ApiService apiService = ApiService(baseUrl: 'https://parkingsystem-hjcb.onrender.com'); // Crea una instancia de ApiService
-    String email = '';
-    String password = '';
-    String nombre = '';
-    String telefono = '';
-
-    void _register() async {
-      // Llama a la función de registro del ApiService
-      await apiService.register(email, password, nombre, telefono);
-      // Después del registro, puedes navegar a la página de inicio de sesión
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginPage()),
-      );
-    }
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -55,7 +60,7 @@ class SignupPage extends StatelessWidget {
               Column(
                 children: <Widget>[
                   TextField(
-                    onChanged: (value) => email = value,
+                    controller: emailController,
                     decoration: InputDecoration(
                       hintText: "Email",
                       border: OutlineInputBorder(
@@ -70,7 +75,7 @@ class SignupPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   TextField(
-                    onChanged: (value) => password = value,
+                    controller: passwordController,
                     decoration: InputDecoration(
                       hintText: "Password",
                       border: OutlineInputBorder(
@@ -86,7 +91,7 @@ class SignupPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   TextField(
-                    onChanged: (value) => nombre = value,
+                    controller: nombreController,
                     decoration: InputDecoration(
                       hintText: "Nombre",
                       border: OutlineInputBorder(
@@ -101,7 +106,7 @@ class SignupPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   TextField(
-                    onChanged: (value) => telefono = value,
+                    controller: telefonoController,
                     decoration: InputDecoration(
                       hintText: "Teléfono",
                       border: OutlineInputBorder(
@@ -119,7 +124,7 @@ class SignupPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.only(top: 3, left: 3),
                 child: ElevatedButton(
-                  onPressed: _register,
+                  onPressed: () => _register(context),
                   child: const Text(
                     "Sign up",
                     style: TextStyle(fontSize: 20, color: Colors.white),
