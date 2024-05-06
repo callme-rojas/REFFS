@@ -147,7 +147,12 @@ void _showReservationDialog(BuildContext context) async {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('Cancelar'),
+                child: Text(
+                  'Cancelar',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 176, 39, 39),
+                  ),
+                ),
               ),
               ElevatedButton(
                 onPressed: () async {
@@ -173,7 +178,7 @@ void _showReservationDialog(BuildContext context) async {
                     // Show error message or handle accordingly
                   }
                 },
-                child: Text('Reservar'),
+                child: Text('Reservar',style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),),
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
                     Color.fromARGB(255, 176, 39, 39),

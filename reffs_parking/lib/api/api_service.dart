@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_print
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -80,8 +79,7 @@ class ApiService {
         'email': email,
         'password': password,
         'nombre': username,
-        'telefono':
-            telefono, // Incluir el campo telefono en el cuerpo de la solicitud
+        'telefono': telefono, // Incluir el campo telefono en el cuerpo de la solicituD
       });
 
       print('Enviando solicitud HTTP para registro...');

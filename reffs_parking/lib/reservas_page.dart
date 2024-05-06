@@ -15,7 +15,7 @@ class _ReservasPage extends State<ReservasPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mis Garajes'),
+        title: Text('Garajes Disponibles'),
       ),
       body: FutureBuilder<List<Garaje>>(
         future: _getGarajesDisponibles(),

@@ -7,6 +7,7 @@ class Garaje {
   final String dimensiones;
   final String caracteristicasAdicionales;
   late final String disponibilidad;
+  final String telefono;
 
   Garaje({
     required this.idGaraje,
@@ -17,6 +18,7 @@ class Garaje {
     required this.dimensiones,
     required this.caracteristicasAdicionales,
     required this.disponibilidad,
+    required this.telefono,
   });
 
   factory Garaje.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class Garaje {
       dimensiones: json['dimensiones'] ?? '',
       caracteristicasAdicionales: json['caracteristicasadicionales'] ?? '',
       disponibilidad: json['disponibilidad'] ?? '',
+      telefono: json['telefono'] ?? '',
     );
   }
 }
