@@ -210,6 +210,7 @@ class Sidebar extends StatelessWidget {
               ],
             ),
           ),
+          SizedBox(height: 8.0),
           GestureDetector(
             onTap: () {
               Navigator.push(
